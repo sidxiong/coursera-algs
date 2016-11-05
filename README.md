@@ -4,6 +4,27 @@
 
 I use this terrific online course and its well designed programming assignments to recap basics in algorithms.
 
+
+#### update 11/04/2016
+Finished programming assignments week5 of Part I.
+
+* Kd-Tree: Implemented 2D-Tree datastructure that support efficient range search and nearest neighbor operations.
+
+#### update 11/03/2016
+Notes for geo-application of BST (week5 of Part I).
+
+![pic](https://s3-us-west-2.amazonaws.com/sid-static/bst-application.png)
+
+* Using BST search 1D range
+* Converting Line Intersection problem into 1D range search by sweeping line algorithm
+    * Keep in BST y-coordinates of left point of lines that haven't end yet
+    * When encountering a vertical line, do search in BST. Points found indicate intersections
+* Kd-Tree
+    * Using 2d-Tree to find nearest neighbor: pruning the other subtree when updating current nearest in current subtree, or will search in both subtrees
+    * kd-Tree: recursively do 2-partition on one dimension at a time. Use $level = i~mod~k$.
+    * k nearest neighbor: use a fixed size priority queue to keep candidates.
+   
+
 #### update 11/02/2016
 Finished programming assignments week4 of Part I.
 
