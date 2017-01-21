@@ -4,6 +4,10 @@
 
 I use this terrific online course and its well designed programming assignments to recap basics in algorithms.
 
+#### update 01/20/2017
+Finished programming assignments week1 of Part II.
+
+* Word-Net: Find shortest path common ancestor in Word Net of nouns.
 
 #### update 11/04/2016
 Finished programming assignments week5 of Part I.
