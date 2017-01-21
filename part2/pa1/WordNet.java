@@ -5,6 +5,7 @@ import edu.princeton.cs.algs4.In;
 
 import java.util.*;
 
+
 /**
  * @author : Siyadong Xiong
  * @version : 1/17/17.
@@ -52,7 +53,42 @@ public class WordNet {
             }
         }
 
+        if (!isDAG(graph)) throw new IllegalArgumentException();
+
         sap = new SAP(graph);
+    }
+
+    private boolean isDAG(Digraph G) {
+        Queue<Integer> q = new ArrayDeque<>();
+        int[] indegrees = new int[G.V()];
+        boolean[] visited = new boolean[G.V()];
+        Set<Integer> root = new HashSet<>();
+        for (int i = 0; i < indegrees.length; i++) {
+            if ((indegrees[i] = G.indegree(i)) == 0) {
+                q.offer(i);
+                if (G.outdegree(i) == 0) root.add(i);
+            }
+        }
+
+        if (q.isEmpty()) return false;
+        while (!q.isEmpty()) {
+            int v = q.poll();
+            visited[v] = true;
+            for (int adj : G.adj(v)) {
+                visited[adj] = true;
+                indegrees[adj]--;
+                if (indegrees[adj] == 0) {
+                    q.offer(adj);
+                }
+                if (G.outdegree(adj) == 0) {
+                    root.add(adj);
+                }
+            }
+        }
+        for (boolean v : visited) {
+            if (!v) return false;
+        }
+        return root.size() == 1;
     }
 
     // all WordNet nouns
@@ -68,6 +104,7 @@ public class WordNet {
     // a synset (second field of synsets.txt) that is a shortest common ancestor
     // of noun1 and noun2 (defined below)
     public String sap(String nounA, String nounB) {
+        if (nounA == null || nounB == null) throw new NullPointerException();
         if (!isNoun(nounA) || !isNoun(nounB)) throw new IllegalArgumentException();
 
         Iterable<Integer> a        = nouns.get(nounA);
@@ -79,6 +116,7 @@ public class WordNet {
 
     // distance between noun1 and noun2 (defined below)
     public int distance(String nounA, String nounB) {
+        if (nounA == null || nounB == null) throw new NullPointerException();
         if (!isNoun(nounA) || !isNoun(nounB)) throw new IllegalArgumentException();
         int dis =  sap.length(nouns.get(nounA),
                               nouns.get(nounB));

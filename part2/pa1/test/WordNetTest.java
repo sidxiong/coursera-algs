@@ -1,5 +1,7 @@
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import part2.pa1.WordNet;
 
 import java.util.Iterator;
@@ -10,12 +12,15 @@ import java.util.Iterator;
  * @email : sx225@cornell.edu
  */
 public class WordNetTest {
-    private final WordNet wn = new WordNet("synsets.txt", "hypernyms.txt");
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
 
     @Test
     public void test() throws Exception {
+        final WordNet wn = new WordNet("synsets.txt", "hypernyms.txt");
         String sap;
-        int dis;
+        int    dis;
         sap = wn.sap("worm", "bird");
         dis = wn.distance("worm", "bird");
 
@@ -35,11 +40,42 @@ public class WordNetTest {
         Assert.assertEquals(dis, 29);
 
         Iterator<String> iter = wn.nouns().iterator();
-        int i = 0;
+        int              i    = 0;
         while (iter.hasNext()) {
             i++;
             iter.next();
         }
         Assert.assertEquals(i, 119188);
+    }
+
+    @Test
+    public void testThrowException() throws Exception {
+        int i = 0;
+        try {
+            new WordNet("wordnet/synsets3.txt", "wordnet/hypernyms3InvalidTwoRoots.txt");
+        } catch (IllegalArgumentException ex) {
+            i++;
+        }
+        try {
+            new WordNet("wordnet/synsets3.txt", "wordnet/hypernyms3InvalidCycle.txt");
+        } catch (IllegalArgumentException ex) {
+            i++;
+        }
+        try {
+            new WordNet("wordnet/synsets6.txt", "wordnet/hypernyms6InvalidTwoRoots.txt");
+        } catch (IllegalArgumentException ex) {
+            i++;
+        }
+        try {
+            new WordNet("wordnet/synsets6.txt", "wordnet/hypernyms6InvalidCycle.txt");
+        } catch (IllegalArgumentException ex) {
+            i++;
+        }
+        try {
+            new WordNet("wordnet/synsets6.txt", "wordnet/hypernyms6InvalidCycle.txt");
+        } catch (IllegalArgumentException ex) {
+            i++;
+        }
+        Assert.assertEquals(5, i);
     }
 }

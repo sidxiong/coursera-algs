@@ -17,15 +17,15 @@ public class SAP {
     // constructor takes a rooted DAG as argument
     public SAP(Digraph G) {
         if (G == null) throw new NullPointerException();
-        this.G = G;
+        this.G = new Digraph(G);
     }
 
     // do unit testing of this class
     public static void main(String[] args) {
-        SAP sca = new SAP(new Digraph(new In("wordnet/digraph3.txt")));
+        SAP sca = new SAP(new Digraph(new In("wordnet/digraph_tournament.txt")));
 
-        List<Integer> x       = Arrays.asList(8);
-        List<Integer> y       = Arrays.asList(13);
+        List<Integer> x       = Arrays.asList(0);
+        List<Integer> y       = Arrays.asList(2);
         SCANode       scaNode = sca.bfs(x, y);
         System.out.println(scaNode.length);
         System.out.println(scaNode.ancestor);
@@ -66,6 +66,7 @@ public class SAP {
 
     private SCANode stepBFS(Queue<Integer> q, Set<Integer> marked, Set<Integer> otherMarked,
                             int[] distTo, int[] distToOfOther) {
+        SCANode node = null;
         if (!q.isEmpty()) {
             int v = q.dequeue();
             for (int adj : G.adj(v)) {
@@ -75,14 +76,15 @@ public class SAP {
                     distTo[adj] = distTo[v] + 1;
 
                     if (otherMarked.contains(adj)) {
-//                        distTo[adj] = distTo[v] + 1;
-//                    } else {
-                        return new SCANode(distToOfOther[adj] + (distTo[v] + 1), adj, distTo[v] + 1);
+                        if (node == null ||
+                            distToOfOther[adj] + (distTo[v] + 1) < node.length) {
+                            node = new SCANode(distToOfOther[adj] + (distTo[v] + 1), adj, distTo[v] + 1);
+                        }
                     }
                 }
             }
         }
-        return null;
+        return node;
     }
 
 
@@ -119,17 +121,15 @@ public class SAP {
                 if (candidate == null || node1.length < candidate.length) {
                     candidate = node1;
                 }
-                if (node1.bfsStep >= candidate.length) {
-                    return candidate;
-                }
             }
             if (node2 != null) {
                 if (candidate == null || node2.length < candidate.length) {
                     candidate = node2;
                 }
-                if (node2.bfsStep >= candidate.length) {
-                    return candidate;
-                }
+            }
+            if ((node1 != null && node1.bfsStep >= candidate.length) ||
+                (node2 != null && node2.bfsStep >= candidate.length)) {
+                return candidate;
             }
         }
         return candidate;
